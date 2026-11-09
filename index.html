@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ELYPROOF · Live pool board, Elysium chain</title>
+<meta name="description" content="ELYPROOF tracks the busiest pools on chain 99901 in real time and pins its own token to the first row.">
+<meta name="theme-color" content="#04171b">
+<meta property="og:title" content="ELYPROOF">
+<meta property="og:description" content="A live pool board for chain 99901.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://elyproof.site/">
+<meta property="og:image" content="https://elyproof.site/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script>document.documentElement.classList.add('js')</script>
+<script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+<a class="skip" href="#main">Jump past navigation</a>
+
+<header class="hdr">
+  <div class="strip">
+    <div class="ticker" id="ticker" aria-label="Live pool ticker">
+      <div class="ticker-track" id="tickerTrack"><span class="tk-item">loading feed</span></div>
+    </div>
+    <span class="status" id="status" role="status"><i class="dot"></i><span id="statusText">Connecting</span></span>
+  </div>
+  <div class="bar">
+    <a class="brand" href="#top" aria-label="ELYPROOF home">
+      <img src="/brand/logo-64.png" width="32" height="32" alt="" decoding="async">
+      <span>ELYPROOF</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#top" class="on" data-s="top">Overview</a>
+      <a href="#board" data-s="board">Board</a>
+      <a href="#chain" data-s="chain">Chain</a>
+      <a href="#vision" data-s="vision">Vision</a>
+    </nav>
+    <div class="socials" id="socials"></div>
+  </div>
+  <nav class="nav-m" id="navM" aria-label="Sections, compact">
+    <a href="#top" class="on" data-s="top">Overview</a>
+    <a href="#board" data-s="board">Board</a>
+    <a href="#chain" data-s="chain">Chain</a>
+    <a href="#vision" data-s="vision">Vision</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="mesh" aria-hidden="true">
+      <i class="blob b1" data-depth="0.10"></i><i class="blob b2" data-depth="0.18"></i><i class="blob b3" data-depth="0.06"></i>
+      <svg class="lattice" data-depth="0.04" width="100%" height="100%" aria-hidden="true">
+        <defs><pattern id="lat" width="120" height="68" patternUnits="userSpaceOnUse">
+          <path d="M0 0L120 68M120 0L0 68" stroke="currentColor" stroke-width="1" fill="none"/>
+        </pattern></defs>
+        <rect width="100%" height="100%" fill="url(#lat)"/>
+      </svg>
+    </div>
+
+    <div class="wrap hero-in">
+      <div class="ca rv" id="caSlot" style="--i:0"></div>
+      <h1 class="rv" style="--i:1">Verified signal from Elysium’s frontier.</h1>
+      <p class="lead rv" style="--i:2">Follow the busiest pools on chain 99901 as they move, with your own token pinned to the front row once its address is published.</p>
+      <div class="cta rv" style="--i:3">
+        <a class="btn btn-primary" href="#board">Open the board</a>
+        <button class="btn btn-ghost" type="button" id="walletBtn">Add network</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="card tiles spot rv" id="tiles" aria-label="Key figures" style="--i:0">
+      <div class="tile-c"><span class="tl">Chain ID</span><span class="tv" id="t-chain">99901</span><span class="ts">Network identifier</span></div>
+      <div class="tile-c"><span class="tl">Gas token</span><span class="tv" id="t-cur">HYPE</span><span class="ts">Pays for every call</span></div>
+      <div class="tile-c"><span class="tl">Pools in view</span><span class="tv"><span data-n="pools">—</span></span><span class="ts">Ranked by volume</span></div>
+      <div class="tile-c"><span class="tl">Volume</span><span class="tv"><span data-n="vol">—</span></span><span class="ts">Across the board, 24h</span></div>
+      <div class="tile-c"><span class="tl">Liquidity</span><span class="tv"><span data-n="liq">—</span></span><span class="ts">Depth held in pools</span></div>
+      <div class="tile-c"><span class="tl">Top mover</span><span class="tv"><span data-n="mover">—</span></span><span class="ts" id="moverSub">Best 24h swing</span></div>
+      <div class="tile-c"><span class="tl">Own price</span><span class="tv"><span data-n="ownp">—</span></span><span class="ts">Fills once an address exists</span></div>
+      <div class="tile-c"><span class="tl">Own volume</span><span class="tv"><span data-n="ownv">—</span></span><span class="ts">Fills once an address exists</span></div>
+    </section>
+
+    <aside class="promo card spot rv" style="--i:1">
+      <span class="ad-tag">Link</span>
+      <img src="/brand/logo-64.png" width="28" height="28" alt="" loading="lazy">
+      <strong>Need the raw ledger?</strong>
+      <span class="promo-sub">Blocks, receipts and contracts live in the chain explorer.</span>
+      <a class="btn btn-dark" id="explorerBtn" href="#" target="_blank" rel="noopener noreferrer">Launch</a>
+    </aside>
+
+    <section class="card board rv" id="board" aria-labelledby="boardH" style="--i:0">
+      <div class="ph">
+        <h2 id="boardH">Market board</h2>
+        <div class="tabs" role="tablist" aria-label="Sort board">
+          <button role="tab" aria-selected="true" data-sort="vol" class="tab on">Volume</button>
+          <button role="tab" aria-selected="false" data-sort="chg" class="tab">Movers</button>
+          <button role="tab" aria-selected="false" data-sort="liq" class="tab">Depth</button>
+        </div>
+        <span class="badge" id="boardBadge"><i class="dot"></i>Live</span>
+      </div>
+      <div class="cols" aria-hidden="true">
+        <span>#</span><span>Token</span><span class="r">Price</span><span class="r">24h</span><span class="r">Volume</span><span class="r">Liquidity</span><span></span>
+      </div>
+      <div class="rows" id="rows" role="table" aria-label="Pools"></div>
+      <div class="note" id="boardNote" hidden></div>
+      <div class="pf"><span>Pools via GeckoTerminal. Own pair via DexScreener.</span></div>
+    </section>
+
+    <div class="two">
+      <section class="card chart spot rv" aria-labelledby="chartH" style="--i:0">
+        <div class="ph"><h2 id="chartH">Volume split</h2><span class="ph-r" id="chartTotal">—</span></div>
+        <div class="chart-body">
+          <div class="yax" aria-hidden="true"><span id="ymax">—</span><span id="ymid">—</span><span>0</span></div>
+          <div class="bars-wrap"><div class="bars" id="bars" role="list"></div></div>
+        </div>
+        <div class="readout" id="readout">Point at a column for its figures.</div>
+      </section>
+
+      <section class="card net spot rv" id="chain" aria-labelledby="netH" style="--i:1">
+        <div class="ph"><h2 id="netH">Chain details</h2></div>
+        <dl class="kvs" id="kvs"></dl>
+        <div class="pf"><span>Values for manual wallet setup.</span></div>
+      </section>
+    </div>
+
+    <section class="vision" id="vision" aria-labelledby="visionH">
+      <h2 id="visionH" class="sec-h rv" style="--i:0">Built around three promises</h2>
+      <div class="cards3">
+        <article class="card fcard spot rv" style="--i:1"><span class="ic">01</span><h3>Own token, front row</h3><p>The moment a contract address is published, it claims the first slot and fills it with figures from its busiest pair.</p></article>
+        <article class="card fcard spot rv" style="--i:2"><span class="ic">02</span><h3>Source-true numbers</h3><p>Every figure comes straight from open market feeds. When a feed stalls, you get a dash and a note rather than a guess.</p></article>
+        <article class="card fcard spot rv" style="--i:3"><span class="ic">03</span><h3>One tap to copy</h3><p>Each pool carries a control that copies its token address, sized for thumbs on any screen.</p></article>
+      </div>
+
+      <h2 class="sec-h rv" id="roadH" style="--i:0">Road ahead</h2>
+      <ol class="road">
+        <li class="card spot rv" style="--i:1"><b>Phase 1</b><h3>Signal</h3><p>Live pool board, ticker and chain details.</p></li>
+        <li class="card spot rv" style="--i:2"><b>Phase 2</b><h3>Pin</h3><p>Own token row fed by its published address.</p></li>
+        <li class="card spot rv" style="--i:3"><b>Phase 3</b><h3>Lens</h3><p>Wallet watchlists and per-pool detail pages.</p></li>
+        <li class="card spot rv" style="--i:4"><b>Phase 4</b><h3>Reach</h3><p>Open data endpoints for builders.</p></li>
+      </ol>
+    </section>
+  </div>
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr-in">
+    <div class="ftr-brand">
+      <a class="brand" href="#top"><img src="/brand/logo-64.png" width="28" height="28" alt=""><span>ELYPROOF</span></a>
+      <p>Community-built and unaffiliated with Elysium’s builders.</p>
+    </div>
+    <nav aria-label="Footer sections"><h4>Jump to</h4><a href="#board">Board</a><a href="#chain">Chain</a><a href="#vision">Vision</a></nav>
+    <nav aria-label="Elsewhere" id="ftrLinks"><h4>Elsewhere</h4></nav>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
